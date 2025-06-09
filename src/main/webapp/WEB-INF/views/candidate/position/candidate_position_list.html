@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Position List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body>
+<div th:replace="~{/candidate/fragments/candidate_header :: header}"></div>
+<div>
+    <div class="text-3xl font-semibold rounded-t-lg bg-[#EEEEEE] w-max py-4 pr-20 pl-4 rounded-r-full">
+        <div>
+            <span class="text-[#ab1f24] ">All recruitment positions</span> for you
+        </div>
+    </div>
+
+    <form method="get" th:action="@{/home/positions}" class="absolute right-4 top-20 w-full max-w-md mx-auto mb-6">
+        <input
+                type="text"
+                name="keyword"
+                placeholder="Search positions here..."
+                th:value="${keyword}"
+                class="w-full px-4 py-2 pr-24 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#ab1f24] focus:border-[#ab1f24] transition-all duration-150"
+        />
+        <button
+                type="submit"
+                class="absolute top-1 right-1 h-[calc(100%-0.5rem)] px-4 rounded-md bg-[#ab1f24] text-white text-sm font-medium flex items-center gap-2 hover:bg-[#91191e] transition-all duration-150"
+        >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            Search
+        </button>
+    </form>
+
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mx-40 my-32">
+
+        <a th:each="rp : ${rpListDTO}"
+           th:href="@{/home/positions/{id}(id=${rp.id})}"
+           class="group border border-gray-300 rounded-lg p-4 flex items-start gap-4 transition-all hover:border-[#ab1f24] hover:bg-[#fff5f5] cursor-pointer w-full max-w-md">
+            <!-- Icon -->
+            <div class="w-12 h-12 flex items-center justify-center border border-gray-300 rounded-md group-hover:border-[#ab1f24]">
+                <svg class="h-8 w-8 text-gray-600 group-hover:text-[#ab1f24]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                </svg>
+
+            </div>
+
+            <!-- Text content -->
+            <div class="flex-1">
+                <h3 class="text-base font-semibold text-black group-hover:text-[#ab1f24]" th:text="${rp.name}">Front End Developer</h3>
+                <div class="flex flex-wrap gap-1">
+                        <span th:each="tech, i : ${rp.techNames}" th:if="${i.index < 3}"
+                              th:text="${tech}" class="bg-cyan-100 text-cyan-700 px-2 py-0.5 text-xs rounded font-medium"></span>
+                    <span th:if="${rp.techNames.size() > 3}" class="text-sm text-gray-500 font-semibold">...</span>
+                </div>
+            </div>
+
+            <!-- Arrow icon -->
+            <div>
+                <svg class="h-5 w-5 text-gray-600 group-hover:text-[#ab1f24]  " viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                </svg>
+            </div>
+        </a>
+
+        <div th:if="${#lists.isEmpty(rpListDTO)}" class="flex justify-center col-span-3">
+
+            <div class="flex flex-col items-center justify-center text-center text-gray-500">
+                <svg width="64" height="41" viewBox="0 0 64 41" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 1)" fill="none" fill-rule="evenodd"><ellipse fill="#f5f5f5" cx="32" cy="33" rx="32" ry="7"></ellipse><g fill-rule="nonzero" stroke="#d9d9d9"><path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"></path><path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z" fill="#fafafa"></path></g></g></svg>
+                No  recruitment positions found.
+            </div>
+
+        </div>
+    </div>
+
+    <a th:href="@{/}" class="flex cursor-pointer items-center gap-1 border px-4 py-2 rounded-md w-max absolute top-36 left-5">
+        <svg class="h-5 w-5 rotate-180 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+        </svg>
+        Back
+    </a>
+
+</div>
+<!-- Pagination -->
+<div class="mt-6 mr-40 flex justify-end" th:if="${totalPages > 0}">
+    <nav class="inline-flex -space-x-px text-sm rounded-md shadow-sm overflow-hidden">
+
+        <!-- Nút trái (Prev) -->
+        <span th:if="${currentPage == 1}">
+            <button disabled
+                    class="px-3 py-2 border bg-gray-100 text-gray-400 cursor-not-allowed rounded-l">
+                &larr;
+            </button>
+        </span>
+        <a th:if="${currentPage > 1}"
+           th:href="@{/dashboard/positions(page=${currentPage - 1}, size=${size}, keyword=${keyword})}"
+           class="px-3 py-2 border bg-white text-gray-700 hover:bg-gray-100 rounded-l">
+            &larr;
+        </a>
+
+        <!-- Các trang -->
+        <a th:each="i : ${#numbers.sequence(1, totalPages)}"
+           th:href="@{/home/positions(page=${i}, size=${size}, keyword=${keyword})}"
+           th:text="${i}"
+           th:classappend="${i == currentPage} ? 'bg-red-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+           class="px-3 py-2 border">
+        </a>
+
+        <!-- Nút phải (Next) -->
+        <span th:if="${currentPage == totalPages}">
+            <button disabled
+                    class="px-3 py-2 border bg-gray-100 text-gray-400 cursor-not-allowed rounded-r">
+                &rarr;
+            </button>
+        </span>
+        <a th:if="${currentPage < totalPages}"
+           th:href="@{/home/positions(page=${currentPage + 1}, size=${size}, keyword=${keyword})}"
+           class="px-3 py-2 border bg-white text-gray-700 hover:bg-gray-100 rounded-r">
+            &rarr;
+        </a>
+
+    </nav>
+</div>
+
+<div th:replace="~{/candidate/fragments/footer :: footer}"></div>
+</body>
+</html>

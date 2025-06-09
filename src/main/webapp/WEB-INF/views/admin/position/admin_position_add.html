@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Recruitment Position List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<div class="fixed inset-0 z-50">
+    <!-- Background -->
+    <div class="absolute inset-0 z-0">
+        <img th:src="@{'/uploads/backgroup_for_position.jpg'}" alt="bg" class="w-full h-full object-cover opacity-40"/>
+        <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="absolute inset-0 z-20 flex items-center justify-center px-4 ">
+        <div class="w-full max-w-2xl bg-white rounded-xl p-8 shadow-xl space-y-6 max-h-[680px] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-gray-800">Add Recruitment Position</h2>
+
+            <form th:action="@{/dashboard/positions/add}" method="post" th:object="${createPositionDTO}"
+                  enctype="multipart/form-data" class="space-y-6">
+
+                <!-- Name -->
+                <div>
+                    <label class="block font-semibold text-sm">Name *</label>
+                    <input type="text" th:field="*{name}" placeholder="Enter recruitment position name..."
+                           class="w-full border outline-none rounded px-4 py-2 focus:ring-red-500 focus:ring-2"/>
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-sm text-red-600 mt-1"></p>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label class="block font-semibold text-sm">Description *</label>
+                    <textarea th:field="*{description}" rows="4" placeholder="Description here..."
+                              class="w-full border rounded px-4 py-2 focus:ring-red-500 focus:ring-2 resize-none outline-none"></textarea>
+                    <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
+                       class="text-sm text-red-600 mt-1"></p>
+                </div>
+
+
+                <!-- Salary + Experience -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-sm">Min Salary *</label>
+                        <input type="number" th:field="*{minSalary}" class="w-full border rounded px-4 py-2 outline-none focus:ring-red-500 focus:ring-2"/>
+                        <p th:if="${#fields.hasErrors('minSalary')}" th:errors="*{minSalary}"
+                           class="text-sm text-red-600 mt-1"></p>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm">Max Salary *</label>
+                        <input type="number" th:field="*{maxSalary}" class="w-full border rounded px-4 py-2 outline-none focus:ring-red-500 focus:ring-2"/>
+                        <p th:if="${#fields.hasErrors('maxSalary')}" th:errors="*{maxSalary}"
+                           class="text-sm text-red-600 mt-1"></p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block font-semibold text-sm">Min Experience (years) *</label>
+                        <input type="number" th:field="*{minExperience}" class="w-full border rounded px-4 py-2 outline-none focus:ring-red-500 focus:ring-2"/>
+                        <p th:if="${#fields.hasErrors('minExperience')}" th:errors="*{minExperience}"
+                           class="text-sm text-red-600 mt-1"></p>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-sm" for="numberOfVacancies">Number of candidates *</label>
+                        <input id="numberOfVacancies" type="number" th:field="*{numberOfVacancies}" class="w-full border rounded px-4 py-2 outline-none focus:ring-red-500 focus:ring-2"/>
+                        <p  th:if="${#fields.hasErrors('numberOfVacancies')}" th:errors="*{numberOfVacancies}"
+                           class="text-sm text-red-600 mt-1"></p>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-sm" for="form-of-work">Form of work *</label>
+                        <select id="form-of-work" th:field="*{formOfWork}" class="w-full border rounded px-4 py-2 outline-none focus:ring-red-500 focus:ring-2">
+                            <option value="">--Select Form--</option>
+                            <option th:each="f : ${T(ra.edu.entity.enums.position.WorkForm).values()}"
+                                    th:value="${f}"
+                                    th:text="${f.displayName}"></option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('formOfWork')}" th:errors="*{formOfWork}" class="text-sm text-red-600 mt-1"></p>
+
+
+                    </div>
+                </div>
+
+                <!-- Technology Select -->
+                <div>
+                    <label class="block font-semibold text-sm">Technology *</label>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <div th:each="tech : ${technologies}">
+                            <label class="cursor-pointer">
+                                <input type="checkbox" class="peer hidden" th:field="*{technologyIds}"
+                                       th:value="${tech.id}"/>
+                                <span class="inline-block bg-gray-100 text-gray-700 border border-gray-300
+                                 rounded-full px-3 py-1 text-sm font-medium
+                                  peer-checked:bg-yellow-50 peer-checked:text-yellow-800 peer-checked:border-yellow-300
+                                  transition-colors duration-150">
+                                <span th:text="${tech.name}"></span>
+  </span>
+                            </label>
+
+                        </div>
+                    </div>
+                    <p th:if="${#fields.hasErrors('technologyIds')}" th:errors="*{technologyIds}"
+                       class="text-sm text-red-600 mt-1"></p>
+                </div>
+
+                <!-- Expired Date -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-sm">Expired Date *</label>
+                        <input type="date" th:field="*{expiredDate}" class="w-full border rounded px-4 py-2 outline-none focus:ring-red-500 focus:ring-2"/>
+                        <p th:if="${#fields.hasErrors('expiredDate')}" th:errors="*{expiredDate}"
+                           class="text-sm text-red-600 mt-1"></p>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-sm" for="location">Location *</label>
+                        <select id="location" th:field="*{location}" class="w-full border rounded px-4 py-2 outline-none focus:ring-red-500 focus:ring-2">
+                            <option value="">--Select Location--</option>
+                            <option th:each="loc : ${locations}"
+                                    th:value="${loc.name}"
+                                    th:text="${loc.name}"></option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('location')}" th:errors="*{location}" class="text-sm text-red-600 mt-1"></p>
+                    </div>
+
+                </div>
+
+
+                <!-- Actions -->
+                <div class="flex justify-end gap-4 pt-2">
+                    <a th:href="@{/dashboard/positions}"
+                       class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Cancel</a>
+                    <button type="submit"
+                            class="bg-[#ab1f24] px-4 py-2 text-white font-semibold rounded hover:bg-red-700">
+                        Add
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #ab1f24;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #86191e;
+    }
+
+
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: #9F9F9F #f1f1f1;
+    }
+</style>
+
+</body>
+</html>

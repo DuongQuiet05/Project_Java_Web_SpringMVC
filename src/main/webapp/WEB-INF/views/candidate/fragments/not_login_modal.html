@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Fragment - Not Login Modal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+
+<div th:fragment="not_login_modal">
+  <!-- Modal backdrop -->
+  <div class="fixed inset-0 z-50">
+    <img th:src="@{'/uploads/backgroup_for_candidate_apply.jpg'}"
+         alt="Background"
+         class="absolute inset-0 w-full h-full object-cover opacity-40 z-0 pointer-events-none"/>
+
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-10"></div>
+
+    <!-- Centered Modal Content -->
+    <div class="absolute inset-0 z-20 flex items-center justify-center px-4">
+      <div class="w-full max-w-lg rounded bg-white p-8 shadow-xl text-center">
+        <h2 class="mb-6 text-2xl font-bold text-gray-800 flex gap-3 items-center justify-center">
+          <svg class="h-8 w-8 text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <circle cx="12" cy="12" r="10" />  <line x1="12" y1="16" x2="12" y2="12" />  <line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+          You are not logged in
+        </h2>
+
+        <p class="mb-6 text-gray-700">
+          Please login to continue...
+        </p>
+
+        <div class="flex justify-center gap-4">
+          <a th:href="@{/auth/login}"
+             class="rounded-md bg-[#ab1f24] px-6 py-3 font-semibold text-white hover:bg-red-700 transition">
+            Login Now
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

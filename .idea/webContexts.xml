@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebContextManager">
+    <option name="state">
+      <map>
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/candidate/info/candidate_change_password.html" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/candidate/info" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/candidate/info/candidate_profile.html" value="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/candidate/info" />
+      </map>
+    </option>
+  </component>
+</project>

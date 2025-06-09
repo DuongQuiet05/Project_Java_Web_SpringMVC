@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Header</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div th:fragment="header">
+    <div class="flex justify-between items-center bg-white px-14 py-3 shadow-md">
+        <!-- Logo -->
+        <h1 class="text-xl font-bold">
+            <span class="text-black">Intern </span>
+            <span class="text-[#ab1f24]">SHIP</span>
+        </h1>
+
+        <!-- Khi đã đăng nhập -->
+        <div class="relative inline-block text-left" th:if="${candidateStay != null}">
+            <button type="button" onclick="toggleDropdown()"
+                    class="inline-flex items-center gap-1 text-sm font-semibold text-black hover:text-[#ab1f24]">
+                Hello,
+                <span class="text-[#ab1f24]" th:text="${candidateStay.name}">Nam</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                     viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </button>
+
+            <div id="dropdownMenu"
+                 class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[99] hidden">
+                <div class="py-2 text-sm text-gray-800">
+                    <a th:href="@{/home/profile}" class="block px-4 py-2 hover:bg-gray-50">Information</a>
+                    <a th:href="@{/home/applications}" class="block px-4 py-2 hover:bg-gray-50">My Application</a>
+                    <hr class="my-1"/>
+                    <a href="javascript:void(0);"
+                       class="block px-4 py-2 text-red-600 hover:bg-red-50 w-full text-left"
+                       onclick="openLogoutModal()">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Khi chưa đăng nhập -->
+        <div th:if="${candidateStay == null}" class="flex gap-2">
+            <a th:href="@{/auth/login}"
+               class="px-6 py-2 rounded bg-[#ab1f24] text-white hover:text-red-700 hover:bg-white hover:border-2 hover:border-red-700 font-semibold hover:bg-red-700 transition">
+                Sign In
+            </a>
+
+            <a th:href="@{/auth/register}"
+               class="px-6 py-2 rounded hover:bg-[#ab1f24] bg-white border-2 border-red-700 hover:text-white text-red-700 font-semibold hover:bg-red-700 transition">
+                Register
+            </a>
+        </div>
+
+<!--        notify success-->
+        <div id="loginSuccessModal" th:if="${loginSuccess}"
+             class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+
+            <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 animate-fadeIn">
+                <!-- Icon + Title -->
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="bg-green-100 rounded-full p-2">
+                        <svg class="h-8 w-8 text-green-500" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-900">Login Successfully!</h2>
+                        <p class="text-sm text-gray-600 mt-1" th:text="${loginSuccess}">
+                            Thao tác đã được thực hiện thành công!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JS dropdown -->
+    <script>
+        function toggleDropdown() {
+            const menu = document.getElementById('dropdownMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        window.addEventListener('click', function (e) {
+            const button = document.querySelector('button[onclick="toggleDropdown()"]');
+            const menu = document.getElementById('dropdownMenu');
+            if (button && menu && !button.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
+
+    <!--js notify login-->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const modal = document.getElementById("loginSuccessModal");
+            if (modal) {
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 3000);
+
+                modal.addEventListener("click", (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = "none";
+                    }
+                });
+            }
+        });
+    </script>
+
+
+    <!-- Logout Modal -->
+    <div th:replace="~{auth/confirm_logout_modal :: confirmLogoutModal(
+    'logoutModal',
+    'Logout Confirmation',
+    'Are you sure you want to logout?',
+    '/auth/logout'
+)}"></div>
+
+    <script>
+        function openLogoutModal() {
+            document.getElementById("logoutModal").classList.remove("hidden");
+
+            const logoutButton = document.querySelector("#logoutModal .confirm-logout-button");
+            if (logoutButton) {
+                logoutButton.onclick = function () {
+                    const url = logoutButton.getAttribute("data-logout-url");
+                    window.location.href = url;
+                };
+            }
+        }
+
+        function closeModal(button) {
+            button.closest(".fixed").classList.add("hidden");
+        }
+    </script>
+
+
+</div>
+
+</body>
+</html>

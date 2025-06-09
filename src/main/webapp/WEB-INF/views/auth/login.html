@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-white">
+<div class="flex w-full overflow-hidden gap-20 px-20">
+
+    <!-- Left image side (placeholder) -->
+    <div class="w-3/6 flex items-center">
+
+        <img src="https://res.cloudinary.com/dyarmkynu/image/upload/v1749709933/login_image_utqvua.png"
+             alt="illustration" class="max-w-full h-auto">
+    </div>
+
+    <!-- Right login form -->
+    <div class="w-2/6 p-10">
+        <h2 class="text-3xl font-bold tex   t-gray-900 mb-1 text-center">
+            Intern <span class="text-[#ab1f24]">SHIP</span>
+        </h2>
+        <p class="text-gray-600 mb-8 text-center">Please sign in</p>
+
+        <form method="post" th:object="${loginDTO}" th:action="@{/auth/login}" class="space-y-5">
+            <div>
+                <input placeholder="Please enter your email ..."
+                       th:field="*{email}"
+                       class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"/>
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-red-600 text-sm mt-1"></p>
+            </div>
+
+            <div>
+                <input type="password" placeholder="Please enter your password ..."
+                       th:field="*{password}"
+                       class="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"/>
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                   class="text-red-600 text-sm mt-1"></p>
+            </div>
+
+            <p th:if="${wrongInfo}" th:text="${wrongInfo}" class="text-red-600 text-sm"></p>
+
+            <div class="flex items-center justify-between text-sm text-gray-600">
+                <label class="flex items-center gap-2"
+                       th:classappend="${hasRememberMe} ? 'invisible' : ''">
+                    <input type="checkbox" class="accent-[#ab1f24]" name="rememberMe">
+                    Remember me
+                </label>
+                <div>
+                    <span>Don't have an account?</span>
+                    <a th:href="@{/auth/register}" class="text-[#ab1f24] hover:underline">click here!</a>
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-[#ab1f24] hover:bg-red-700 text-white font-semibold py-2 rounded-md transition">
+                Sign in
+            </button>
+
+        </form>
+        <div class="flex justify-center items-center mt-4">
+            <p class="text-center text-gray-400 text-xs ">&copy; 2025 - Rikkei Education</p>
+<!--            <a class="text-[#ab1f24] hover:underline text-xs" th:href="@{/auth/forgot-password}">Forgot-->
+<!--                password?</a>-->
+        </div>
+
+    </div>
+</div>
+
+<div class="bg-green-400 w-max py-2 px-5 rounded absolute top-5 right-5 font-semibold text-white" th:if="${registerSuccess}" th:text="${registerSuccess}">
+    Successfully!
+</div>
+
+<div class="bg-red-700 w-max py-2 px-5 rounded absolute top-5 right-5 font-semibold text-white flex gap-2 items-center" th:if="${LockedNotify}">
+    <svg class="size-5"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
+    <span th:if="${LockedNotify}" th:text="${LockedNotify}"></span>
+</div>
+</body>
+</html>

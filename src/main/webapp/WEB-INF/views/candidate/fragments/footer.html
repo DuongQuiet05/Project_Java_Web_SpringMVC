@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div th:fragment="footer">
+  <div class="my-8 flex justify-between items-center gap-4 text-gray-500 mx-24">
+    <span class="text-medium font-semibold">International Education and Human Resources Development Organization - Rikkei Education</span>
+<div class="flex gap-3">
+  <svg class="h-6 w-6 text-blue-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
+  <svg class="h-6 w-6 text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />  <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" /></svg>
+</div>
+  </div>
+
+  <footer class="bg-white border-t border-gray-200 py-8 px-6 mx-24">
+    <div class=" grid grid-cols-1 md:grid-cols-3 gap-8 text-sm text-gray-700">
+      <!-- CONTACT INFORMATION -->
+      <div>
+        <h3 class="font-semibold mb-2">CONTACT INFORMATION</h3>
+        <p class="mb-1">📍 Hanoi headquarters</p>
+        <p class="mb-1">
+          7th Floor, Block A, Song Da Building, Pham Hung Street, My Dinh 1 Ward,<br>
+          Nam Tu Liem District, Hanoi
+        </p>
+        <p class="mb-1">📞 Phone Number: 0862 069 233</p>
+        <p>📧 Email: academy@rikkeisoft.com</p>
+      </div>
+
+      <!-- QUICK LINKS -->
+      <div>
+        <h3 class="font-semibold mb-2">QUICK LINKS</h3>
+        <ul class="space-y-1">
+          <li><a href="#" class="hover:underline">Overview</a></li>
+          <li><a href="#" class="hover:underline">Internship position</a></li>
+          <li><a href="#" class="hover:underline">Internship application</a></li>
+          <li><a href="#" class="hover:underline">My tasks</a></li>
+        </ul>
+      </div>
+
+      <!-- LIST OF BRANCHES -->
+      <div>
+        <h3 class="font-semibold mb-2">LIST OF BRANCHES</h3>
+        <p class="mb-1 font-medium">Branch 1</p>
+        <p class="mb-1">📍 Address: 7th Floor, Block A, Song Da Building, Pham Hung Street, My Dinh 1 Ward, Nam Tu Liem District, Hanoi</p>
+        <p class="mb-4">📞 Phone: 0862 069 233</p>
+
+        <p class="mb-1 font-medium">Branch 2</p>
+        <p class="mb-1">📍 Address: 3rd Floor, TSA Building, No. 77 Le Trung Nghia Street, Ward 12, Tan Binh District, Ho Chi Minh City</p>
+        <p>📞 Phone: 0962 703 893</p>
+      </div>
+    </div>
+
+  </footer>
+</div>
+
+</body>
+</html>

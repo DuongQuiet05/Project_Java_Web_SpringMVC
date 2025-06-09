@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Applications</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div th:replace="~{/candidate/fragments/candidate_header :: header}"></div>
+
+<div>
+    <div class="text-3xl font-semibold rounded-t-lg bg-[#EEEEEE] w-max py-4 pr-20 pl-4 rounded-r-full">
+        <div>
+            <span class="text-[#ab1f24] ">Your</span> Applications
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mx-40 my-16">
+        <a th:each="app : ${applications}"
+           th:href="@{/home/applications/{id}(id=${app.id})}"
+           class="group border border-gray-300 rounded-lg p-4 flex items-start gap-4 transition-all hover:border-[#ab1f24] hover:bg-[#fff5f5] cursor-pointer w-full max-w-md relative">
+
+            <!-- Icon -->
+            <div class="size-20 flex items-center justify-center border border-gray-300 rounded-md group-hover:border-[#ab1f24]">
+                <svg class="size-14 group-hover:text-[#ab1f24]" width="24" height="24" viewBox="0 0 24 24"
+                     stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z"/>
+                    <path d="M6 4h11a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-11a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1m3 0v18"/>
+                    <line x1="13" y1="8" x2="15" y2="8"/>
+                    <line x1="13" y1="12" x2="15" y2="12"/>
+                </svg>
+            </div>
+
+            <!-- Text content -->
+            <div class="flex-1">
+                <h3 class="text-base font-semibold text-black group-hover:text-[#ab1f24]" th:text="${app.position.name}">
+                    Front End Developer
+                </h3>
+
+                <!-- Progress badge -->
+                <div class="flex gap-3 items-center">
+                    <p class="text-sm">Progress</p>
+                    <div>
+                        <!-- PASSED -->
+                        <span th:if="${app.progress.name() == 'DONE' and app.result.name() == 'PASSED'}"
+                              class="text-[10px] border border-green-500 bg-green-100 text-green-600 rounded p-1">PASSED</span>
+                        <!-- FAILED -->
+                        <span th:if="${app.progress.name() == 'DONE' and app.result.name() == 'FAILED'}"
+                              class="text-[10px] border border-gray-700 bg-gray-100 text-gray-700 rounded p-1">FAILED</span>
+                        <!-- CANCELED -->
+                        <span th:if="${app.progress.name() == 'CANCELED'}"
+                              class="text-[10px] border border-stone-500 bg-stone-100 text-stone-500 rounded p-1">CANCELED</span>
+                        <!-- REJECTED -->
+                        <span th:if="${app.progress.name() == 'REJECTED'}"
+                              class="text-[10px] border border-red-500 bg-red-100 text-red-500 rounded p-1">REJECTED</span>
+                        <!-- HANDLING -->
+                        <span th:if="${app.progress.name() == 'HANDLING'}"
+                              class="text-[10px] border border-orange-500 bg-orange-100 text-orange-500 rounded p-1">HANDLING</span>
+                        <!-- INTERVIEWING -->
+                        <span th:if="${app.progress.name() == 'INTERVIEWING'}"
+                              class="text-[10px] border border-purple-500 bg-purple-100 text-purple-500 rounded p-1">INTERVIEWING</span>
+                        <!-- PENDING -->
+                        <span th:if="${app.progress.name() == 'PENDING'}"
+                              class="text-[10px] border border-yellow-400 bg-yellow-100 text-yellow-600 rounded p-1">PENDING</span>
+                    </div>
+                </div>
+
+                <div class="flex text-gray-500 justify-end pt-2">
+                    <span th:text="${#temporals.format(app.createdAt, 'HH:mm - dd/MM/yyyy')}">12:00 - 12/12/2025</span>
+                </div>
+
+<!--                notify-->
+                <div th:if="${app.progress.name() == 'HANDLING' and app.interviewDate != null}" class="bg-red-600 size-4 rounded-full absolute top-[-6px] right-[-6px]">
+                </div>
+            </div>
+        </a>
+
+        <!-- No applications -->
+        <div th:if="${#lists.isEmpty(applications)}" class="flex justify-center col-span-3">
+            <div class="flex flex-col items-center justify-center text-center text-gray-500">
+                <svg width="64" height="41" viewBox="0 0 64 41" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(0 1)" fill="none" fill-rule="evenodd">
+                        <ellipse fill="#f5f5f5" cx="32" cy="33" rx="32" ry="7"></ellipse>
+                        <g fill-rule="nonzero" stroke="#d9d9d9">
+                            <path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"></path>
+                            <path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z" fill="#fafafa"></path>
+                        </g>
+                    </g>
+                </svg>
+                You have no applications yet.
+            </div>
+        </div>
+    </div>
+</div>
+
+<a th:href="@{/}" class="flex cursor-pointer items-center gap-1 border px-4 py-2 rounded-md w-max absolute top-16 right-10">
+    <svg class="h-5 w-5 rotate-180 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12" />
+        <polyline points="12 5 19 12 12 19" />
+    </svg>
+    Back
+</a>
+
+<!-- Pagination -->
+<div class="mt-6 mr-40 flex justify-end" th:if="${totalPages > 0}">
+    <nav class="inline-flex -space-x-px text-sm rounded-md shadow-sm overflow-hidden">
+        <!-- Prev -->
+        <span th:if="${currentPage == 1}">
+            <button disabled class="px-3 py-2 border bg-gray-100 text-gray-400 cursor-not-allowed rounded-l">&larr;</button>
+        </span>
+        <a th:if="${currentPage > 1}"
+           th:href="@{/home/applications(page=${currentPage - 1}, size=${size})}"
+           class="px-3 py-2 border bg-white text-gray-700 hover:bg-gray-100 rounded-l">&larr;</a>
+
+        <!-- Pages -->
+        <a th:each="i : ${#numbers.sequence(1, totalPages)}"
+           th:href="@{/home/applications(page=${i}, size=${size})}"
+           th:text="${i}"
+           th:classappend="${i == currentPage} ? 'bg-red-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+           class="px-3 py-2 border"></a>
+
+        <!-- Next -->
+        <span th:if="${currentPage == totalPages}">
+            <button disabled class="px-3 py-2 border bg-gray-100 text-gray-400 cursor-not-allowed rounded-r">&rarr;</button>
+        </span>
+        <a th:if="${currentPage < totalPages}"
+           th:href="@{/home/applications(page=${currentPage + 1}, size=${size})}"
+           class="px-3 py-2 border bg-white text-gray-700 hover:bg-gray-100 rounded-r">&rarr;</a>
+    </nav>
+</div>
+
+<div th:replace="~{/candidate/fragments/footer :: footer}"></div>
+</body>
+</html>

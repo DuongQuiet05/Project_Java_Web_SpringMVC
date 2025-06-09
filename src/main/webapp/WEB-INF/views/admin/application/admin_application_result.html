@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit Technology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<!--<div th:replace="~{admin/fragments/admin_sidebar :: sidebar('technology')}"></div>-->
+
+<!-- Modal backdrop -->
+<div class="fixed inset-0 z-50">
+    <img th:src="@{'/uploads/backgroup_for_admin_application_detail.jpg'}"
+         alt="Background"
+         class="absolute inset-0 w-full h-full object-cover opacity-40 z-0 pointer-events-none"/>
+
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-10"></div>
+
+    <!-- Centered Modal Content -->
+    <div class="absolute inset-0 z-20 flex items-center justify-center px-4">
+        <div class="w-full max-w-lg rounded bg-white p-8 shadow-xl">
+            <h2 class="mb-6 text-2xl font-bold text-gray-800">Result Interview</h2>
+
+            <form th:action="@{'/dashboard/applications/' + ${appId} + '/result'}"
+                  method="post" th:object="${resultDTO}" class="space-y-5">
+
+                <!-- Nếu không được update -->
+                <div th:if="${!resultDTO.canUpdateResult}">
+                    <p class="text-red-600">
+                        You can only update the results at least 1 day after the interview date.
+                    </p>
+                </div>
+
+                <!-- Nếu được update -->
+                <div>
+                    <label  th:if="${resultDTO.canUpdateResult}" class="block font-semibold text-gray-700 mb-1">Result Note</label>
+                    <textarea  th:if="${resultDTO.canUpdateResult}" th:field="*{resultNote}" placeholder="Enter result note..."
+                              class="w-full rounded-md border px-4 py-2 focus:ring-2 focus:ring-red-500"></textarea>
+                    <p th:errors="*{resultNote}" class="text-sm text-red-600"></p>
+
+                    <div class="flex justify-end gap-4">
+                        <a th:href="@{/dashboard/applications/{id}(id=${appId})}"
+                           class="rounded-md bg-gray-100 px-4 py-2 font-semibold text-gray-800 hover:bg-gray-200">Cancel</a>
+
+                        <button  th:if="${resultDTO.canUpdateResult}" name="action" value="fail"
+                                class="rounded-md bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700">
+                            Fail
+                        </button>
+
+                        <button  th:if="${resultDTO.canUpdateResult}" name="action" value="pass"
+                                class="rounded-md bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700">
+                            Pass
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
+
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

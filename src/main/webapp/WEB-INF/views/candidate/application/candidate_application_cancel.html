@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit Technology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<!--<div th:replace="~{admin/fragments/admin_sidebar :: sidebar('technology')}"></div>-->
+
+<!-- Modal backdrop -->
+<div class="fixed inset-0 z-50">
+    <img th:src="@{'/uploads/backgroup_for_candidate_cancel.jpg'}"
+         alt="Background"
+         class="absolute inset-0 w-full h-full object-cover opacity-40 z-0 pointer-events-none"/>
+
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-10"></div>
+
+    <!-- Centered Modal Content -->
+    <div class="absolute inset-0 z-20 flex items-center justify-center px-4">
+        <div class="w-full max-w-lg rounded bg-white p-8 shadow-xl">
+            <h2 class="mb-6 text-2xl font-bold text-gray-800">Cancel Application</h2>
+
+            <form th:action="@{'/home/applications/' + ${appId} + '/cancel'}"
+                  method="post" th:object="${cancelDTO}" class="space-y-5">
+
+                <label class="block font-semibold text-gray-700 mb-1">Cancel Reason</label>
+                <input type="text" th:field="*{canceledReason}" placeholder="Enter reason ..."
+                       class="w-full rounded-md border px-4 py-2 focus:ring-2 focus:ring-red-500"/>
+                <p th:errors="*{canceledReason}" class="text-sm text-red-600"></p>
+
+                <!-- Buttons -->
+                <div class="text-right flex gap-4 justify-end">
+                    <a th:href="@{/home/applications/{id}(id=${appId})}"
+                       class="rounded-md bg-gray-100 px-4 py-2 font-semibold text-gray-800 hover:bg-gray-200">Cancel</a>
+
+                    <button type="submit"
+                            class="rounded-md bg-[#ab1f24] px-4 py-2 font-semibold text-white hover:bg-red-700">Save</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

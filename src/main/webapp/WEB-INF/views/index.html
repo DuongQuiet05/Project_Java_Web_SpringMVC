@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div th:replace="~{/candidate/fragments/candidate_header :: header}"></div>
+<!--banner-->
+<div>
+    <div class="relative w-full h-[680px] overflow-hidden text-white">
+        <!-- Background image -->
+        <img src="https://res.cloudinary.com/dyarmkynu/image/upload/v1750214300/image_2_xoaqiz.png"
+             class="absolute inset-0 w-full h-full object-cover z-0" alt="Banner Background" />
+
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-30 z-0"></div>
+
+        <!-- Content Container -->
+        <div class="relative z-10 h-full max-w-7xl mx-auto px-6 md:px-10 flex flex-col justify-center gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center px-6">
+                <!-- Left content -->
+                <div class="space-y-6">
+                    <h1 class="text-7xl font-bold leading-tight">
+                        Intern <span>SHIP</span>
+                    </h1>
+                    <p class="text-lg font-semibold pt-4">
+                        Practical experience, breakthrough<br />
+                        technology potential
+                    </p>
+                </div>
+
+                <!-- Right paragraph -->
+                <div class="hidden md:block pl-64 pt-24">
+                    <p class="text-white font-medium leading-relaxed w-80">
+                        Join the internship program to learn from experts, sharpen your practical skills, and
+                        prepare for a bright future career.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Search Box -->
+            <div class="bg-white rounded-xl shadow-lg px-6 py-6 w-full max-w-6xl mx-auto">
+                <h2 class="text-base font-semibold text-gray-800 mb-4">
+                    Find a <span class="text-[#ab1f24] font-bold">suitable internship position</span>
+                </h2>
+                <form th:action="@{/home/positions}"
+                      method="get" class="flex flex-col md:flex-row gap-4 items-center">
+
+                    <div class="relative w-full md:w-[200px]">
+                        <!-- Icon trái: location -->
+                        <div class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                        </div>
+
+                        <!-- Icon phải: mũi tên dropdown -->
+                        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-stone-500">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </div>
+
+                        <!-- Select -->
+                        <select name="city"
+                                class="w-full appearance-none px-4 py-2 pl-10 pr-8 border rounded-md text-gray-700 focus:ring-2 focus:ring-[#ab1f24]">
+                            <option value="">Select your city</option>
+                            <option th:each="loc : ${locations}"
+                                    th:value="${loc.name}"
+                                    th:text="${loc.name}"></option>
+                        </select>
+
+                    </div>
+
+                    <input type="text" name="keyword"
+                           class="flex-1 px-4 py-2 border rounded-md text-gray-700 focus:ring-2 focus:ring-[#ab1f24]"
+                           placeholder="Enter internship position ..." />
+
+                    <button type="submit"
+                            class="px-16 py-2 bg-[#ab1f24] text-white rounded-md hover:bg-red-700 font-semibold transition">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="w-full px-36 py-12 space-y-16 bg-white">
+
+    <!-- Best Position Section -->
+    <div>
+        <h2 class="text-3xl font-semibold mb-6 rounded-t-lg bg-[#EEEEEE] p-6 flex items-center justify-between">
+            <div>
+                <span class="text-[#ab1f24] ">The best position</span> for you
+            </div>
+
+            <div>
+                <a th:href="@{/home/positions}" class="text-sm flex items-center gap-2 hover:underline text-red-700"
+                   href="">View all
+                    <svg class="size-4 group-hover:text-[#ab1f24]" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </a>
+
+            </div>
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+
+            <a  th:href="@{/home/positions/{id}(id=${rp.id})}" th:each="rp : ${positionsForYou}" class="group border border-gray-300 rounded-lg p-4 flex items-start gap-4 transition-all hover:border-[#ab1f24] hover:bg-[#fff5f5] cursor-pointer w-full max-w-md">
+                <!-- Icon -->
+                <div class="w-12 h-12 flex items-center justify-center border border-gray-300 rounded-md group-hover:border-[#ab1f24]">
+                    <svg class="h-8 w-8 text-gray-600 group-hover:text-[#ab1f24]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+
+                </div>
+
+                <!-- Text content -->
+                <div class="flex-1">
+                    <h3 class="text-base font-semibold text-black group-hover:text-[#ab1f24]" th:text="${rp.name}">Front End Developer</h3>
+                    <div class="flex flex-wrap gap-1">
+                        <span th:each="tech, i : ${rp.techNames}" th:if="${i.index < 3}"
+                              th:text="${tech}" class="bg-cyan-100 text-cyan-700 px-2 py-0.5 text-xs rounded font-medium"></span>
+                        <span th:if="${rp.techNames.size() > 3}" class="text-sm text-gray-500 font-semibold">...</span>
+                    </div>
+                </div>
+
+                <!-- Arrow icon -->
+                <div>
+                    <svg class="h-5 w-5 text-gray-600 group-hover:text-[#ab1f24]  " viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- Top Recruiter Section -->
+    <div>
+        <h2 class="text-3xl font-semibold mb-6">
+            <span class="text-[#ab1f24]">Top</span> recruiter
+        </h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            <!-- Recruiter cards -->
+            <div class="bg-white border-2 rounded-lg p-4 text-center flex flex-col gap-2 py-10">
+                <img src="https://res.cloudinary.com/dyarmkynu/image/upload/v1750216661/image_3_irdjbf.svg"
+                     class="h-10 object-contain mx-auto"/>
+                <p class="font-semibold text-sm">Rikasoft</p>
+                <p class="text-xs text-[#ab1f24] font-medium">4 internship position &rarr;</p>
+            </div>
+            <div class="bg-white border-2 rounded-lg p-4 text-center flex flex-col gap-2 py-10">
+                <img src="https://res.cloudinary.com/dyarmkynu/image/upload/v1750216677/image_4_dn3kag.svg"
+                     class="h-10 object-contain mx-auto"/>
+                <p class="font-semibold text-sm">Rikkeisoft</p>
+                <p class="text-xs text-[#ab1f24] font-medium">4 internship position &rarr;</p>
+            </div>
+            <div class="bg-white border-2 rounded-lg p-4 text-center flex flex-col gap-2 py-10">
+                <img src="https://res.cloudinary.com/dyarmkynu/image/upload/v1750216659/image_5_ocjpcw.svg"
+                     class="h-10 object-contain mx-auto"/>
+                <p class="font-semibold text-sm">Rikasoft</p>
+                <p class="text-xs text-[#ab1f24] font-medium">4 internship position &rarr;</p>
+            </div>
+            <div class="bg-white border-2 rounded-lg p-4 text-center flex flex-col gap-2 py-10">
+                <img src="https://res.cloudinary.com/dyarmkynu/image/upload/v1750216678/image_6_fc6n99.svg"
+                     class="h-10 object-contain mx-auto"/>
+                <p class="font-semibold text-sm">Rikasoft</p>
+                <p class="text-xs text-[#ab1f24] font-medium">4 internship position &rarr;</p>
+            </div>
+            <div class="bg-white border-2 rounded-lg p-4 text-center flex flex-col gap-2 py-10">
+                <img src="https://res.cloudinary.com/dyarmkynu/image/upload/v1750216659/image_7_tyvjoi.svg"
+                     class="h-10 object-contain mx-auto"/>
+                <p class="font-semibold text-sm">Rikasoft</p>
+                <p class="text-xs text-[#ab1f24] font-medium">4 internship position &rarr;</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div th:replace="~{/candidate/fragments/footer :: footer}"></div>
+</body>
+</html>

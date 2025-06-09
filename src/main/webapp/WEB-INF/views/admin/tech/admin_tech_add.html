@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add New Technology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<!-- Modal backdrop -->
+<div class="fixed inset-0 z-50">
+    <img th:src="@{'/uploads/backgroup_for_tech.jpg'}"
+         alt="Background"
+         class="absolute inset-0 w-full h-full object-cover opacity-40 z-0 pointer-events-none"/>
+
+    <!-- Overlay: làm tối + blur -->
+    <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-10"></div>
+
+    <!-- Modal content: nằm ở giữa màn hình -->
+    <div class="absolute inset-0 z-20 flex items-center justify-center px-4">
+        <div class="w-full max-w-lg rounded-lg bg-white p-8 shadow-xl">
+            <h2 class="mb-6 text-center text-2xl font-bold text-gray-800">Add New Technology</h2>
+
+            <form th:action="@{/dashboard/technologies/add}" method="post" th:object="${createTechDTO}"
+                  enctype="multipart/form-data" class="space-y-5">
+                <!-- Name -->
+                <div>
+                    <label for="name" class="mb-1 block font-semibold text-gray-700">Technology Name</label>
+                    <input type="text" id="name" th:field="*{name}" placeholder="Enter technology name..."
+                           class="w-full rounded-md border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"/>
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="mt-1 text-sm text-red-600"></p>
+                </div>
+
+                <!--                des-->
+                <div>
+                    <label for="des" class="mb-1 block font-semibold text-gray-700">Description</label>
+                    <textarea id="des" th:field="*{description}" placeholder="Enter description..."
+                              class="w-full rounded-md border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 resize-y"></textarea>
+                    <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
+                       class="mt-1 text-sm text-red-600"></p>
+                </div>
+
+                <!-- File Upload -->
+                <div>
+                    <label for="file" class="mb-1 block font-semibold text-gray-700">Upload Image</label>
+                    <input type="file" id="file" th:field="*{file}" accept="image/*"
+                           class="w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-transparent file:bg-red-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-red-700 hover:file:bg-red-100"
+                           onchange="previewImage(event)"/>
+                </div>
+                <p th:if="${#fields.hasErrors('file')}" th:errors="*{file}" class="mt-1 text-sm text-red-600"></p>
+
+                <!-- Image Preview -->
+                <div id="previewContainer" class="hidden">
+                    <img id="imagePreview" class="w-full h-auto max-h-60 rounded-md border object-contain"/>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center flex gap-5 justify-end">
+                    <a th:href="@{/dashboard/technologies(page=1, size=5)}"
+                       class="1/4 block rounded-md bg-gray-100 px-4 py-2 text-center font-semibold text-gray-800 transition hover:bg-gray-200">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="1/4 rounded-md bg-[#ab1f24] px-4 py-2 font-semibold text-white transition hover:bg-red-700">
+                        Add Technology
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById("imagePreview");
+        const container = document.getElementById("previewContainer");
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                container.classList.remove("hidden");
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+</body>
+</html>

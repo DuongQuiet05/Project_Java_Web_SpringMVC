@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Candidate List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100 min-h-screen">
+
+<!-- Sidebar -->
+<div th:replace="~{admin/fragments/admin_sidebar:: sidebar('candidate')}"></div>
+
+<!-- Main content -->
+<div class="flex-1 p-8">
+    <hr class="border-t-2 border-gray-200 my-4"/>
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+            <svg class="size-8" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                 stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/>
+            </svg>
+            Candidate
+        </h2>
+    </div>
+
+    <hr class="border-t-2 border-gray-200 mt-1"/>
+    <div class="flex items-center justify-end mt-8 gap-4">
+        <!-- FILTER FORM full-->
+<!--        <form method="get" th:action="@{/dashboard/candidates}" th:object="${filterDTO}" class="flex flex-wrap gap-4">-->
+
+<!--            <div class="flex items-center gap-3">-->
+<!--                &lt;!&ndash; Technology &ndash;&gt;-->
+<!--                <select th:field="*{techId}" class="px-3 py-2 border rounded-md text-sm">-->
+<!--                    <option value="">Technology</option>-->
+<!--                    <option th:each="tech : ${technologies}"-->
+<!--                            th:value="${tech.id}"-->
+<!--                            th:text="${tech.name}">-->
+<!--                    </option>-->
+<!--                </select>-->
+
+<!--                &lt;!&ndash; Gender &ndash;&gt;-->
+<!--                <select th:field="*{gender}" class="px-3 py-2 border rounded-md text-sm">-->
+<!--                    <option value="">Gender</option>-->
+<!--                    <option th:each="g : ${T(com.duong.projectrm.entity.enums.Gender).values()}"-->
+<!--                            th:value="${g.name()}"-->
+<!--                            th:text="${g.name()}">-->
+<!--                    </option>-->
+<!--                </select>-->
+
+<!--                &lt;!&ndash; Age &ndash;&gt;-->
+<!--                <select th:field="*{ageRange}" class="px-3 py-2 border rounded-md text-sm">-->
+<!--                    <option value="">Age</option>-->
+<!--                    <option value="0-20">&le; 20</option>-->
+<!--                    <option value="21-30">21 - 30</option>-->
+<!--                    <option value="31-40">31 - 40</option>-->
+<!--                    <option value="41-50">41 - 50</option>-->
+<!--                    <option value="51-200">&gt; 50</option>-->
+<!--                </select>-->
+
+<!--                &lt;!&ndash; Experience &ndash;&gt;-->
+<!--                <select th:field="*{expRange}" class="px-3 py-2 border rounded-md text-sm">-->
+<!--                    <option value="">Experience</option>-->
+<!--                    <option value="0-1">0 - 1</option>-->
+<!--                    <option value="2-3">2 - 3</option>-->
+<!--                    <option value="4-6">4 - 6</option>-->
+<!--                    <option value="7-100">7+</option>-->
+<!--                </select>-->
+
+<!--            </div>-->
+<!--            &lt;!&ndash; Keyword &ndash;&gt;-->
+<!--            <div class="relative">-->
+<!--                <input type="text" th:field="*{keyword}" placeholder="Search here..."-->
+<!--                       class="w-96 px-4 py-2 pr-24 border outline-none rounded-md text-sm focus:ring-2 focus:ring-[#ab1f24] focus:border-[#ab1f24] "/>-->
+<!--                <button type="submit"-->
+<!--                        class="absolute top-1 right-1 h-[calc(100%-0.5rem)] px-4 bg-[#ab1f24] text-white text-sm font-medium rounded-md hover:bg-[#91191e] flex items-center gap-2">-->
+<!--                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
+<!--                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">-->
+<!--                        <circle cx="11" cy="11" r="8"/>-->
+<!--                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>-->
+<!--                    </svg>-->
+<!--                    Search-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </form>-->
+
+        <!-- FILTER FORM -->
+        <form method="get" th:action="@{/dashboard/candidates}" id="filterForm" class="flex flex-wrap gap-4"
+              th:object="${filterDTO}">
+
+            <input type="hidden" name="keyword" th:value="${filterDTO.keyword}" />
+
+            <!-- Technology -->
+            <select th:field="*{techId}" onchange="submitFilterForm()" class="px-3 py-2 border rounded-md text-sm">
+                <option value="">Technology</option>
+                <option th:each="tech : ${technologies}" th:value="${tech.id}" th:text="${tech.name}"></option>
+            </select>
+
+            <!-- Gender -->
+            <select th:field="*{gender}" onchange="submitFilterForm()" class="px-3 py-2 border rounded-md text-sm">
+                <option value="">Gender</option>
+                <option th:each="g : ${T(ra.edu.entity.enums.account.Gender).values()}"
+                        th:value="${g.name()}" th:text="${g.name()}"></option>
+            </select>
+
+            <!-- Age -->
+            <select th:field="*{ageRange}" onchange="submitFilterForm()" class="px-3 py-2 border rounded-md text-sm">
+                <option value="">Age</option>
+                <option value="0-20">&le; 20</option>
+                <option value="21-30">21 - 30</option>
+                <option value="31-40">31 - 40</option>
+                <option value="41-50">41 - 50</option>
+                <option value="51-200">&gt; 50</option>
+            </select>
+
+            <!-- Experience -->
+            <select th:field="*{expRange}" onchange="submitFilterForm()" class="px-3 py-2 border rounded-md text-sm">
+                <option value="">Experience</option>
+                <option value="0-1">0 - 1</option>
+                <option value="2-3">2 - 3</option>
+                <option value="4-6">4 - 6</option>
+                <option value="7-100">7+</option>
+            </select>
+        </form>
+
+        <script>
+            function submitFilterForm() {
+                document.getElementById("filterForm").submit();
+            }
+        </script>
+
+
+
+        <!-- SEARCH FORM -->
+        <form method="get" th:action="@{/dashboard/candidates}" class="relative mr-4">
+            <input type="text" name="keyword" th:value="${filterDTO.keyword}" placeholder="Search here..."
+                   class="w-96 px-4 py-2 pr-24 border outline-none rounded-md text-sm focus:ring-2 focus:ring-[#ab1f24] focus:border-[#ab1f24] "/>
+            <button type="submit"
+                    class="absolute top-1 right-1 h-[calc(100%-0.5rem)] px-4 bg-[#ab1f24] text-white text-sm font-medium rounded-md hover:bg-[#91191e] flex items-center gap-2">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                Search
+            </button>
+        </form>
+
+
+    </div>
+
+    <br>
+
+    <!-- Table -->
+    <div class="overflow-x-auto bg-white rounded-md shadow">
+        <table class="w-full text-sm text-left">
+            <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+            <tr>
+                <th class="px-6 py-3">STT</th>
+                <th class="px-6 py-3">Name</th>
+                <th class="px-6 py-3">Email</th>
+                <th class="px-6 py-3">Technologies</th>
+<!--                <th class="px-6 py-3">Phone</th>-->
+                <th class="px-6 py-3">Experience</th>
+                <th class="px-6 py-3">Gender</th>
+                <th class="px-6 py-3">DOB</th>
+                <th class="px-6 py-3">Status</th>
+                <th class="px-6 py-3">Actions</th>
+            </tr>
+            </thead>
+
+            <tbody class="text-gray-700">
+            <tr th:each="dto, stat : ${candidates}" class="border-t hover:bg-gray-50">
+                <td class="px-6 py-3" th:text="${(currentPage - 1) * size + stat.index + 1}">1</td>
+                <td class="px-6 py-3" th:text="${dto.name}">Nguyễn Văn A</td>
+                <td class="px-6 py-3" th:text="${dto.email}">email@example.com</td>
+
+                <td class="px-6 py-3">
+                    <div class="flex flex-wrap gap-1 items-center">
+                        <p th:if="${#lists.isEmpty(dto.technologies)}"
+                           class="bg-gray-100 text-gray-500 px-2 py-0.5 text-xs rounded font-medium italic">
+                            None
+                        </p>
+
+                        <p th:each="tech, stat : ${dto.technologies}"
+                           th:if="${stat.index < 2}"
+                           th:text="${tech}"
+                           class="bg-yellow-100 text-yellow-700 px-2 py-0.5 text-xs rounded font-medium">
+                        </p>
+
+                        <p th:if="${dto.technologies.size() > 2}"
+                           class="text-gray-500 font-semibold text-sm">...</p>
+                    </div>
+                </td>
+
+
+<!--                <td class="px-6 py-3" th:text="${dto.phone}">0123456789</td>-->
+                <td class="px-6 py-3">
+                    <!-- 0-1 year -->
+                    <span th:if="${dto.exp <= 1}"
+                          class="bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded-xl font-medium">
+                        <span th:text="${dto.exp}"></span>
+                        <span th:text="${dto.exp == 1 ? ' year' : ' years'}"></span>
+                    </span>
+
+                    <!-- 2-3 years -->
+                    <span th:if="${dto.exp > 1 and dto.exp <= 3}"
+                          class="bg-orange-100 text-orange-800 px-2 py-0.5 text-xs rounded-xl font-medium">
+                        <span th:text="${dto.exp}"></span>
+                        <span> years</span>
+                    </span>
+
+                    <!-- 4-6 years -->
+                    <span th:if="${dto.exp > 3 and dto.exp <= 6}"
+                          class="bg-emerald-100 text-emerald-800 px-2 py-0.5 text-xs rounded-xl font-medium">
+                        <span th:text="${dto.exp}"></span>
+                        <span> years</span>
+                    </span>
+
+                    <!-- >6 years -->
+                    <span th:if="${dto.exp > 6}"
+                          class="bg-purple-100 text-purple-800 px-2 py-0.5 text-xs rounded-xl font-medium">
+                        <span th:text="${dto.exp}"></span>
+                        <span> years</span>
+                    </span>
+                </td>
+
+
+                <td class="px-6 py-3" th:text="${dto.gender}">MALE</td>
+
+                <td class="px-6 py-3" th:text="${#temporals.format(dto.dob, 'dd/MM/yyyy')}">12/10/2003</td>
+                <td class="px-6 py-3">
+                    <span th:if="${dto.status.name() == 'ENABLE'}"
+                     class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs font-medium px-2.5 rounded-full">
+                        <span class="w-1 h-1 rounded-full bg-green-500 inline-block"></span>
+                        Active
+                    </span>
+
+                    <span th:if="${dto.status.name() != 'ENABLE'}"
+                          class="inline-flex items-center gap-1 bg-red-100 text-red-700 text-xs font-medium px-2.5 rounded-full">
+                            <span class="w-1 h-1 rounded-full bg-red-500 inline-block"></span>
+                             Deactivated
+                     </span>
+                </td>
+
+                <td class="px-6 py-3 flex gap-3 items-center">
+
+                    <button type="button"
+                            th:if="${dto.status.name() == 'ENABLE'}"
+                            th:attr="data-id=${dto.id}, data-name=${dto.name}, data-status='DISABLE'"
+                            onclick="openDeleteModal(this)"
+                            class=" text-green-500 hover:text-green-800 pt-1 pl-4">
+
+
+                        <svg class="size-5" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                             stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z"/>
+                            <rect x="5" y="11" width="14" height="10" rx="2"/>
+                            <circle cx="12" cy="16" r="1"/>
+                            <path d="M8 11v-5a4 4 0 0 1 8 0"/>
+                        </svg>
+                    </button>
+
+                    <!-- Hiện nút Mở khóa nếu đang DISABLE -->
+                    <button type="button"
+                            th:if="${dto.status.name() == 'DISABLE'}"
+                            th:attr="data-id=${dto.id}, data-name=${dto.name}, data-status='ENABLE'"
+                            onclick="openDeleteModal(this)"
+                            class="text-red-500 hover:text-red-800 pt-1 pl-4">
+                        <svg class="size-5" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                             stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z"/>
+                            <rect x="5" y="11" width="14" height="10" rx="2"/>
+                            <circle cx="12" cy="16" r="1"/>
+                            <path d="M8 11v-4a4 4 0 0 1 8 0v4"/>
+                        </svg>
+                    </button>
+
+
+                    <!-- Nút Reset Password - do không có trong yêu cần nhưng chức năng đã hoàn thành -->
+<!--                    <button type="button"-->
+<!--                            th:attr="data-id=${dto.id}, data-name=${dto.name}"-->
+<!--                            onclick="openResetModal(this)"-->
+<!--                            class="text-yellow-500 hover:text-yellow-800 pt-1 pl-2">-->
+<!--                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"-->
+<!--                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">-->
+<!--                            <polyline points="1 4 1 10 7 10"/>-->
+<!--                            <polyline points="23 20 23 14 17 14"/>-->
+<!--                            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>-->
+<!--                        </svg>-->
+<!--                    </button>-->
+                </td>
+
+            </tr>
+
+            </tbody>
+
+            <tbody class="text-gray-700" th:if="${#lists.isEmpty(candidates)}">
+            <tr>
+                <td colspan="9" class="px-6 py-4 text-center text-gray-500 italic">
+                    <div class="flex flex-col items-center justify-center">
+                        <svg width="64" height="41" viewBox="0 0 64 41"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <g transform="translate(0 1)" fill="none" fill-rule="evenodd">
+                                <ellipse fill="#f5f5f5" cx="32" cy="33" rx="32" ry="7"></ellipse>
+                                <g fill-rule="nonzero" stroke="#d9d9d9">
+                                    <path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"></path>
+                                    <path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                          fill="#fafafa"></path>
+                                </g>
+                            </g>
+                        </svg>
+                        No candidates found.
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-6 flex justify-end" th:if="${totalPages > 0}">
+        <nav class="inline-flex -space-x-px text-sm rounded-md shadow-sm overflow-hidden">
+
+            <!-- Prev Button -->
+            <span th:if="${currentPage == 1}">
+            <button disabled
+                    class="px-3 py-2 border bg-gray-100 text-gray-400 cursor-not-allowed rounded-l">
+                &larr;
+            </button>
+        </span>
+            <a th:if="${currentPage > 1}"
+               th:href="@{/dashboard/candidates(page=${currentPage - 1}, size=${size}, keyword=${keyword})}"
+               class="px-3 py-2 border bg-white text-gray-700 hover:bg-gray-100 rounded-l">
+                &larr;
+            </a>
+
+            <!-- Page Numbers -->
+            <a th:each="i : ${#numbers.sequence(1, totalPages)}"
+               th:href="@{/dashboard/candidates(page=${i}, size=${size}, keyword=${keyword})}"
+               th:text="${i}"
+               th:classappend="${i == currentPage} ? 'bg-red-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+               class="px-3 py-2 border">
+            </a>
+
+            <!-- Next Button -->
+            <span th:if="${currentPage == totalPages}">
+            <button disabled
+                    class="px-3 py-2 border bg-gray-100 text-gray-400 cursor-not-allowed rounded-r">
+                &rarr;
+            </button>
+        </span>
+            <a th:if="${currentPage < totalPages}"
+               th:href="@{/dashboard/candidates(page=${currentPage + 1}, size=${size}, keyword=${keyword})}"
+               class="px-3 py-2 border bg-white text-gray-700 hover:bg-gray-100 rounded-r">
+                &rarr;
+            </a>
+
+        </nav>
+    </div>
+
+</div>
+
+
+<!-- Confirm Delete Modal -->
+<div th:replace="~{admin/fragments/confirm_modal :: confirmModal(
+    'globalDeleteModal',
+    'Confirm',
+    '',
+    ''
+)}"></div>
+
+
+<script>
+    function openDeleteModal(button) {
+        const id = button.getAttribute("data-id");
+        const name = button.getAttribute("data-name");
+        const newStatus = button.getAttribute("data-status");
+
+        const modal = document.getElementById("globalDeleteModal");
+        modal.classList.remove("hidden");
+
+        modal.querySelector("p").textContent = `Are you sure you want to ${newStatus === 'ENABLE' ? 'unlock' : 'lock'} candidate "${name}"?`;
+
+        const form = modal.querySelector("form");
+        form.setAttribute("action", `/dashboard/candidates/change-status/${id}`);
+        form.innerHTML = `<input type="hidden" name="status" value="${newStatus}">` + form.innerHTML;
+    }
+
+    function closeModal(button) {
+        button.closest('.fixed').classList.add("hidden");
+    }
+
+</script>
+
+
+<!--model success --------------------------------------------------------->
+<div th:replace="~{admin/fragments/success_modal :: successModal(
+    'successModal',
+    'Successfuly!',
+    'Your action has been successfully performed.'
+)}"></div>
+<script th:inline="javascript">
+    function openModalAutoClose(id, timeout = 1000) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                modal.classList.add("hidden");
+            }, timeout);
+        }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+        const showSuccess = /*[[${showSuccess}]]*/ false;
+        if (showSuccess) {
+            openModalAutoClose('successModal', 1000);
+        }
+    });
+</script>
+
+
+<!--&lt;!&ndash; Confirm Reset Password Modal &ndash;&gt;-->
+<!--<div th:replace="~{admin/fragments/confirm_modal :: confirmModal(-->
+<!--    'resetPasswordModal',-->
+<!--    'Reset Password',-->
+<!--    '',-->
+<!--    ''-->
+<!--)}"></div>-->
+
+<!--<script>-->
+<!--    function openResetModal(button) {-->
+<!--        const id = button.getAttribute("data-id");-->
+<!--        const name = button.getAttribute("data-name");-->
+
+<!--        const modal = document.getElementById("resetPasswordModal");-->
+<!--        modal.classList.remove("hidden");-->
+
+<!--        modal.querySelector("p").textContent = `Are you sure you want to reset password for candidate "${name}"?`;-->
+
+<!--        const form = modal.querySelector("form");-->
+<!--        form.setAttribute("action", `/dashboard/candidates/reset-password/${id}`);-->
+<!--    }-->
+
+<!--    function closeModal(button) {-->
+<!--        button.closest('.fixed').classList.add("hidden");-->
+<!--    }-->
+<!--</script>-->
+
+<!--<div th:replace="~{admin/fragments/reset_result_modal :: resetResultModal(-->
+<!--    'resetResultModal',-->
+<!--    ${resetEmail},-->
+<!--    ${newPassword}-->
+<!--)}"></div>-->
+
+
+<!--<script th:inline="javascript">-->
+<!--    window.addEventListener("DOMContentLoaded", () => {-->
+<!--        const resetSuccess = /*[[${resetSuccess}]]*/ false;-->
+<!--        if (resetSuccess) {-->
+<!--            const modal = document.getElementById("resetResultModal");-->
+<!--            if (modal) {-->
+<!--                modal.classList.remove("hidden");-->
+<!--            }-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
+
+
+</body>
+</html>

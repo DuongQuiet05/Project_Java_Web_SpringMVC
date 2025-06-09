@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Technology List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100 min-h-screen">
+
+<!-- Sidebar -->
+<div th:replace="~{admin/fragments/admin_sidebar :: sidebar('technology')}"></div>
+
+<!-- Main content -->
+<div class="flex-1 p-8">
+    <hr class="border-t-2 border-gray-200 my-4"/>
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+            <svg class="size-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            Technology
+        </h2>
+    </div>
+
+    <hr class="border-t-2 border-gray-200 mt-1"/>
+    <div class="flex items-center justify-between mt-8">
+        <div>
+            <a th:href="@{/dashboard/technologies/add}"
+               class="bg-[#ab1f24] hover:bg-red-700 text-white px-4 py-2 rounded-md font-semibold">
+                Add Technology
+            </a>
+        </div>
+
+        <form method="get" th:action="@{/dashboard/technologies}" class="relative w-full max-w-md">
+            <input
+                    type="text"
+                    name="keyword"
+                    placeholder="Search here ..."
+                    th:value="${keyword}"
+                    class="w-full px-4 py-2 pr-24 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#ab1f24] focus:border-[#ab1f24] transition-all duration-150"
+            />
+            <button
+                    type="submit"
+                    class="absolute top-1 right-1 h-[calc(100%-0.5rem)] px-4 rounded-md bg-[#ab1f24] text-white text-sm font-medium flex items-center gap-2 hover:bg-[#91191e] transition-all duration-150"
+            >
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                Search
+            </button>
+        </form>
+    </div>
+
+    <br>
+
+    <!-- Table -->
+
+    <div class="overflow-x-auto bg-white rounded-md shadow">
+        <table class="w-full text-sm text-left">
+            <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+            <tr>
+                <th class="px-6 py-3">STT</th>
+                <th class="px-6 py-3">Name</th>
+                <th class="px-6 py-3">Image</th>
+                <th class="px-6 py-3">Description</th>
+                <th class="px-6 py-3">Updated At</th>
+                <th class="px-6 py-3">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="text-gray-700">
+            <tr th:each="tech, stat : ${technologies}" class="border-t hover:bg-gray-50">
+                <!-- STT -->
+                <td class="px-6 py-3" th:text="${(currentPage - 1) * size + stat.index + 1}">1</td>
+
+                <!-- Name -->
+                <td class="px-6 py-3" th:text="${tech.name}">Java</td>
+
+                <!-- Image -->
+                <td class="px-6 py-3">
+                    <img th:if="${tech.image != null}" th:src="@{'/uploads/' + ${tech.image}}" alt="tech-img"
+                         class="w-12 h-12 object-contain border rounded-md"/>
+                    <span th:if="${tech.image == null}" class="text-gray-400 italic">No image</span>
+                </td>
+
+                <!-- des -->
+                <td class="px-6 py-3 truncate max-w-[250px]" th:text="${tech.description}">
+                    des
+                </td>
+
+                <!-- Updated At -->
+                <td class="px-6 py-3" th:text="${#temporals.format(tech.updatedAt, 'HH:mm - dd/MM/yyyy')}">
+                    19:10 - 13/02/2023
+                </td>
+
+                <!-- Actions -->
+                <td class="px-6 py-3 flex gap-3 items-center">
+                    <a th:href="@{/dashboard/technologies/edit/{id}(id=${tech.id})}"
+                       class="text-yellow-400 hover:text-yellow-600 ">
+                        <svg class="size-5" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                             stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z"/>
+                            <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4"/>
+                            <line x1="13.5" y1="6.5" x2="17.5" y2="10.5"/>
+                        </svg>
+                    </a>
+
+                    <!-- Hiển thị nút Khóa -->
+                    <button type="button"
+                            th:if="${tech.status.name() == 'ENABLED'}"
+                            th:attr="data-id=${tech.id}, data-name=${tech.name}, data-status='DISABLED', data-action='delete'"
+                            onclick="openConfirmModal(this)"
+                            class="text-green-500 hover:text-green-800 pt-1 pl-4">
+                        <svg class="size-5" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                             stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z"/>
+                            <rect x="5" y="11" width="14" height="10" rx="2"/>
+                            <circle cx="12" cy="16" r="1"/>
+                            <path d="M8 11v-5a4 4 0 0 1 8 0"/>
+                        </svg>
+                    </button>
+
+                    <!-- Hiển thị nút Mở khóa  -->
+                    <button type="button"
+                            th:if="${tech.status.name() == 'DISABLED'}"
+                            th:attr="data-id=${tech.id}, data-name=${tech.name}, data-status='ENABLED',data-action='enable'"
+                            onclick="openConfirmModal(this)"
+                            class="text-red-500 hover:text-red-800 pt-1 pl-4">
+                        <svg class="size-5" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                             stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z"/>
+                            <rect x="5" y="11" width="14" height="10" rx="2"/>
+                            <circle cx="12" cy="16" r="1"/>
+                            <path d="M8 11v-4a4 4 0 0 1 8 0v4"/>
+                        </svg>
+                    </button>
+
+
+
+
+
+                </td>
+            </tr>
+            </tbody>
+
+
+            <tbody class="text-gray-700" th:if="${#lists.isEmpty(technologies)}">
+            <tr>
+                <td colspan="6" class="px-6 py-4 text-center text-gray-500 italic ">
+                    <div class="flex flex-col items-center justify-center">
+                        <svg width="64" height="41" viewBox="0 0 64 41" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 1)" fill="none" fill-rule="evenodd"><ellipse fill="#f5f5f5" cx="32" cy="33" rx="32" ry="7"></ellipse><g fill-rule="nonzero" stroke="#d9d9d9"><path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"></path><path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z" fill="#fafafa"></path></g></g></svg>
+                        No technologies found.
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-6 flex justify-end" th:if="${totalPages > 0}">
+        <nav class="inline-flex -space-x-px text-sm rounded-md shadow-sm overflow-hidden">
+
+            <!-- Nút Previous -->
+            <span th:if="${currentPage == 1}">
+            <button disabled class="px-3 py-2 border bg-gray-100 text-gray-400 cursor-not-allowed rounded-l">
+                &larr;
+            </button>
+        </span>
+            <a th:if="${currentPage > 1}"
+               th:href="@{/dashboard/technologies(page=${currentPage - 1}, size=${size}, keyword=${keyword})}"
+               class="px-3 py-2 border bg-white text-gray-700 hover:bg-gray-100 rounded-l">
+                &larr;
+            </a>
+
+            <!-- Các nút số trang -->
+            <a th:each="i : ${#numbers.sequence(1, totalPages)}"
+               th:href="@{/dashboard/technologies(page=${i}, size=${size}, keyword=${keyword})}"
+               th:text="${i}"
+               th:classappend="${i == currentPage} ? 'bg-red-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+               class="px-3 py-2 border">
+            </a>
+
+            <!-- Nút Next -->
+            <span th:if="${currentPage == totalPages}">
+            <button disabled class="px-3 py-2 border bg-gray-100 text-gray-400 cursor-not-allowed rounded-r">
+                &rarr;
+            </button>
+        </span>
+            <a th:if="${currentPage < totalPages}"
+               th:href="@{/dashboard/technologies(page=${currentPage + 1}, size=${size}, keyword=${keyword})}"
+               class="px-3 py-2 border bg-white text-gray-700 hover:bg-gray-100 rounded-r">
+                &rarr;
+            </a>
+
+        </nav>
+    </div>
+
+</div>
+
+<!--modal change status-------------------------------------------------->
+<div th:replace="~{admin/fragments/confirm_modal :: confirmModal(
+    'globalDeleteModal',
+    'Confirm',
+    '',
+    ''
+)}"></div>
+
+<script>
+    function openConfirmModal(button) {
+        const id = button.getAttribute("data-id");
+        const name = button.getAttribute("data-name");
+        const action = button.getAttribute("data-action");
+
+        const modal = document.getElementById("globalDeleteModal");
+        modal.classList.remove("hidden");
+
+        // Xác định URL và message dựa trên action
+        let url = "";
+        let message = "";
+
+        if (action === "delete") {
+            url = `/dashboard/technologies/delete/${id}`;
+            message = `Are you sure you want to disable the technology "${name}"?`;
+        } else if (action === "enable") {
+            url = `/dashboard/technologies/enable/${id}`;
+            message = `Are you sure you want to enable the technology "${name}"?`;
+        }
+
+        // Gán giá trị vào modal
+        modal.querySelector("p").textContent = message;
+        modal.querySelector("form").setAttribute("action", url);
+    }
+
+    function closeModal(button) {
+        button.closest('.fixed').classList.add("hidden");
+    }
+
+</script>
+
+
+<!--model success --------------------------------------------------------->
+<div th:replace="~{admin/fragments/success_modal :: successModal(
+    'successModal',
+    'Successfuly!',
+    'Your action has been successfully performed.'
+)}"></div>
+<script th:inline="javascript">
+    function openModalAutoClose(id, timeout = 1000) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                modal.classList.add("hidden");
+            }, timeout);
+        }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+        const showSuccess = /*[[${showSuccess}]]*/ false;
+        if (showSuccess) {
+            openModalAutoClose('successModal', 1000);
+        }
+    });
+</script>
+
+
+
+
+</body>
+</html>

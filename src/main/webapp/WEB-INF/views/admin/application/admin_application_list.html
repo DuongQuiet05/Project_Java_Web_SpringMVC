@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Application List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex bg-gray-100 min-h-screen">
+
+<!-- Sidebar -->
+<div th:replace="~{admin/fragments/admin_sidebar :: sidebar('application')}"></div>
+
+<!-- Main content -->
+<div class="flex-1 p-8">
+    <hr class="border-t-2 border-gray-200 my-4"/>
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+            <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+            </svg>
+            Applications
+        </h2>
+    </div>
+    <hr class="border-t-2 border-gray-200 mt-1"/>
+    <div class="flex items-center justify-end mt-8 mb-6 gap-4">
+        <form method="get" th:action="@{/dashboard/applications}" id="filterForm" class="flex gap-4"
+              th:object="${filterDTO}">
+
+
+            <label>
+                <select name="progress" onchange="submitFilterForm()" class="px-3 py-2 border rounded-md text-sm">
+                    <option value="">Progress</option>
+                    <option value="PENDING" th:selected="${filterDTO.progress == 'PENDING'}">PENDING</option>
+                    <option value="HANDLING" th:selected="${filterDTO.progress == 'HANDLING'}">HANDLING</option>
+                    <option value="INTERVIEWING" th:selected="${filterDTO.progress == 'INTERVIEWING'}">INTERVIEWING</option>
+                    <option value="REJECTED" th:selected="${filterDTO.progress == 'REJECTED'}">REJECTED</option>
+                    <option value="CANCELED" th:selected="${filterDTO.progress == 'CANCELED'}">CANCELED</option>
+                    <option value="PASSED" th:selected="${filterDTO.progress == 'PASSED'}">PASSED</option>
+                    <option value="FAILED" th:selected="${filterDTO.progress == 'FAILED'}">FAILED</option>
+                </select>
+
+            </label>
+            <div class="relative w-full max-w-md">
+                <label>
+                    <input
+                            type="text"
+                            placeholder="Search here ..."
+                            name="keyword" th:value="${filterDTO.keyword}"
+                            class="w-full px-4 py-2 pr-24 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#ab1f24] focus:border-[#ab1f24] transition-all duration-150"
+                    />
+                </label>
+                <button
+                        type="submit"
+                        class="absolute top-1 right-1 h-[calc(100%-0.5rem)] px-4 rounded-md bg-[#ab1f24] text-white text-sm font-medium flex items-center gap-2 hover:bg-[#91191e] transition-all duration-150"
+                >
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    Search
+                </button>
+            </div>
+        </form>
+
+        <script>
+            function submitFilterForm() {
+                document.getElementById("filterForm").submit();
+            }
+        </script>
+    </div>
+
+
+    <div class="overflow-x-auto bg-white rounded-md shadow">
+        <table class="w-full text-sm text-left">
+            <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+            <tr>
+                <th class="px-6 py-3">#</th>
+                <th class="px-6 py-3">Candidate</th>
+                <th class="px-6 py-3">Position</th>
+                <th class="px-6 py-3">Created At</th>
+                <th class="px-6 py-3">Updated At</th>
+                <th class="px-6 py-3">Progress</th>
+                <th class="px-6 py-3">Actions</th>
+            </tr>
+            </thead>
+
+            <tbody class="text-gray-700">
+            <tr th:each="app, stat : ${applications}" class="border-t hover:bg-gray-50">
+                <td class="px-6 py-3" th:text="${(currentPage - 1) * size + stat.index + 1}">1</td>
+                <td class="px-6 py-3" th:text="${app.candidateName}">
+                </td>
+                <td class="px-6 py-3" th:text="${app.recruitmentPositionName}">
+                </td>
+                <td class="px-6 py-3" th:text="${#temporals.format(app.createdAt, 'HH:mm - dd/MM/yyyy')}"></td>
+                <td class="px-6 py-3" th:text="${#temporals.format(app.updatedAt, 'HH:mm - dd/MM/yyyy')}"></td>
+                <td class="px-6 py-3">
+                    <!-- PASSED -->
+                    <span class="text-[10px] border border-green-500 bg-green-100 text-green-600 rounded p-1"
+                          th:if="${app.progress.name() == 'DONE' and app.interviewResult.name() == 'PASSED'}">PASSED</span>
+
+                    <!-- FAILED -->
+                    <span class="text-[10px] border border-gray-700 bg-gray-100 text-gray-700 rounded p-1"
+                          th:if="${app.progress.name() == 'DONE' and app.interviewResult.name() == 'FAILED'}">FAILED</span>
+
+                    <!-- CANCELED -->
+                    <span class="text-[10px] border border-stone-500 bg-stone-100 rounded p-1 text-stone-500"
+                          th:if="${app.progress.name() == 'CANCELED'}">CANCELED</span>
+
+                    <!-- REJECTED -->
+                    <span class="text-[10px] border border-red-500 bg-red-100 text-red-500 rounded p-1"
+                          th:if="${app.progress.name() == 'REJECTED'}">REJECTED</span>
+
+                    <!-- HANDLING -->
+                    <span class="text-[10px] border border-orange-500 bg-orange-100 text-orange-500 rounded p-1"
+                          th:if="${app.progress.name() == 'HANDLING'}">HANDLING</span>
+
+                    <!-- INTERVIEWING -->
+                    <span class="text-[10px] border border-purple-500 bg-purple-100 text-purple-500 rounded p-1"
+                          th:if="${app.progress.name() == 'INTERVIEWING'}">INTERVIEWING</span>
+
+                    <!-- PENDING -->
+                    <span class="text-[10px] border border-yellow-400 bg-yellow-100 text-yellow-600 rounded p-1"
+                          th:if="${app.progress.name() == 'PENDING'}">PENDING</span>
+                </td>
+
+
+
+                <td class="px-6 py-3 flex gap-2 items-center">
+                    <a th:href="@{'/dashboard/applications/' + ${app.id}}"
+                       class="text-blue-500 py-1 rounded">
+                        <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                    </a>
+
+                    <!-- HANDLING → REJECT + INTERVIEW -->
+
+
+
+
+<!--                    <a th:if="${app.progress.name() == 'INTERVIEWING'}"-->
+<!--                       th:href="@{'/dashboard/applications/' + ${app.id} + '/fail'}"-->
+<!--                       class=" py-1 rounded ">-->
+<!--                        <svg class="h-5 w-5 text-orange-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"-->
+<!--                             stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">-->
+<!--                            <path stroke="none" d="M0 0h24v24H0z"/>-->
+<!--                            <path d="M14 3v4a1 1 0 0 0 1 1h4"/>-->
+<!--                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>-->
+<!--                            <path d="M10 12l4 4m0 -4l-4 4"/>-->
+<!--                        </svg>-->
+<!--                    </a>-->
+                </td>
+
+            </tr>
+            </tbody>
+
+            <tbody th:if="${#lists.isEmpty(applications)}">
+            <tr>
+                <td colspan="7" class="px-6 py-4 text-center text-gray-500 italic">
+                    <div class="flex flex-col items-center justify-center">
+                        <svg width="64" height="41" viewBox="0 0 64 41" xmlns="http://www.w3.org/2000/svg">
+                            <g transform="translate(0 1)" fill="none" fill-rule="evenodd">
+                                <ellipse fill="#f5f5f5" cx="32" cy="33" rx="32" ry="7"></ellipse>
+                                <g fill-rule="nonzero" stroke="#d9d9d9">
+                                    <path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"></path>
+                                    <path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                          fill="#fafafa"></path>
+                                </g>
+                            </g>
+                        </svg>
+                        No applications found.
+                    </div>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-6 flex justify-end" th:if="${totalPages > 0}">
+        <nav class="inline-flex -space-x-px text-sm rounded-md shadow-sm overflow-hidden">
+
+            <span th:if="${currentPage == 1}">
+                <button disabled
+                        class="px-3 py-2 border bg-gray-100 text-gray-400 cursor-not-allowed rounded-l">&larr;</button>
+            </span>
+            <a th:if="${currentPage > 1}"
+               th:href="@{/dashboard/applications(page=${currentPage - 1}, size=${size}, progress=${filterDTO.progress}, keyword=${filterDTO.keyword})}"
+               class="px-3 py-2 border bg-white text-gray-700 hover:bg-gray-100 rounded-l">&larr;</a>
+
+            <a th:each="i : ${#numbers.sequence(1, totalPages)}"
+               th:href="@{/dashboard/applications(page=${i}, size=${size}, progress=${filterDTO.progress}, keyword=${filterDTO.keyword})}"
+               th:text="${i}"
+               th:classappend="${i == currentPage} ? 'bg-red-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+               class="px-3 py-2 border">
+            </a>
+
+            <span th:if="${currentPage == totalPages}">
+                <button disabled
+                        class="px-3 py-2 border bg-gray-100 text-gray-400 cursor-not-allowed rounded-r">&rarr;</button>
+            </span>
+            <a th:if="${currentPage < totalPages}"
+               th:href="@{/dashboard/applications(page=${currentPage + 1}, size=${size}, progress=${filterDTO.progress}, keyword=${filterDTO.keyword})}"
+               class="px-3 py-2 border bg-white text-gray-700 hover:bg-gray-100 rounded-r">&rarr;</a>
+        </nav>
+    </div>
+</div>
+</body>
+</html>
